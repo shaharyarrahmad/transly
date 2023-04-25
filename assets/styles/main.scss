@@ -1,0 +1,19 @@
+
+.hero-bg{
+  background-color: #479dff;
+}
+@font-face {
+  font-family: 'SignikaNegative';
+  src: url('/assets/fonts/SignikaNegative-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+// Override Bootstrap's default font-family
+$font-family-base: 'SignikaNegative';
+
+// $body-color: #111;
+
+// Bootstrap and its default variables
+@import '../node_modules/bootstrap/scss/bootstrap';
+// BootstrapVue and its default variables
