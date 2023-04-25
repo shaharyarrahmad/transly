@@ -9,7 +9,7 @@
       <hr class="m-0">
       <div class="container text-center py-3">
         <p class="lead mb-4 fs-1 text-white fw-bolder">Instant, Free and Accurate Transcription</p>
-        <UploadBox2 @fileSelected="uploadAudio" @transcribePressed=" transcribeUrl" :progress="uploadProgress" class="mt-5 mb-3" :errorText="errorText"></UploadBox2>
+        <UploadBox @fileSelected="uploadAudio" @transcribePressed=" transcribeUrl" :progress="uploadProgress" class="mt-5 mb-3" :errorText="errorText"></UploadBox>
       </div>
     </section>
     <div>
