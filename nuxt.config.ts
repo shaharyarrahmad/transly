@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   css: ['@/assets/styles/main.scss'],
-  debug: true,
   app: {
     head: {
       charset: 'utf-8',
@@ -13,7 +12,6 @@ export default defineNuxtConfig({
       { hid: 'description', name: 'description', content: 'Instant, Free and Accurate Transcription' },
     ],
     link: [
-
       { rel: 'icon', type: 'image/x-icon', href: '/icon.svg' },
     ],
     }
