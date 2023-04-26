@@ -1,7 +1,7 @@
 <template>
   <div class="chat-container py-3 px-3">
     <div v-for="(utterance, index) in utterances" :key="index" class="chat-message">
-      <div :class="['chat-bubble', `speaker-${utterance.speaker}`, 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
+      <div :class="['chat-bubble', 'speaker', 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
         <div class="d-flex justify-content-between w-100">
           <strong class="speaker-label me-2">Speaker {{ labelToNumber(utterance.speaker) }}</strong>
           <small class="time-label text-primary">{{ formatStartTime(utterance.start) }}</small>
@@ -44,14 +44,10 @@ const formatStartTime = (start: number) => {
   margin-bottom: 1rem;
 }
 
-.speaker-A {
+.speaker {
   background-color:  #f5f5f5;
   color: grey;
 }
 
-.speaker-B {
-  background-color:  #f3f1f1;
-  color: gray;
-}
 
 </style>
