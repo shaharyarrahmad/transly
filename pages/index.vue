@@ -60,7 +60,7 @@ const getAudioDuration = () => {
 
 watch(audioDuration, () => {
 //  time is around 33% of the audio duration
-  estimatedTime.value = Math.round(audioDuration.value *0.30);
+  estimatedTime.value = Math.round(audioDuration.value *0.23) + 8;
 });
 
 
@@ -96,7 +96,7 @@ const uploadAudio = async (file: any) => {
 
     if (timeRemaining <= 0) {
       clearInterval(timer);
-      estimatedTimeRemaining.value = '';
+      estimatedTimeRemaining.value = 'Any Moment Now...';
     } else {
       estimatedTimeRemaining.value = formatTime(timeRemaining);
     }
@@ -126,7 +126,7 @@ const formatTime = (time: number) => {
       });
       const transcriptionData = await transcriptionResponse.json();
       if (transcriptionData && transcriptionData.id) {
-        estimatedTimeCountDown()
+        estimatedTimeCountDown();
         let transcriptResult = null;
         do {
           await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -135,11 +135,15 @@ const formatTime = (time: number) => {
               'authorization': API_KEY,
             },
           });
+
           transcriptResult = await transcriptResponse.json();
           transcriptResultStatus.value = transcriptResult.status
         } while (transcriptResult.status === 'queued' || transcriptResult.status === 'processing');
 
         if (transcriptResult.status === 'completed') {
+          uploadProgress.value = -1
+          transcriptLoading.value = false
+          estimatedTimeRemaining.value = ''
           if(transcriptResult.text === null) {
             errorText.value = 'No transcript found'
           }
@@ -148,13 +152,9 @@ const formatTime = (time: number) => {
           }
           if(transcriptResult.utterances !== null && transcriptResult.utterances.length < 2) {
             errorText.value = 'Please Upload Audio with more than one speaker.'
-            uploadProgress.value = -1
-            transcriptLoading.value = false
-            estimatedTimeRemaining.value = ''
             return
           }
-          estimatedTimeRemaining.value = ''
-          transcriptLoading.value = false
+
           transcriptResultStatus.value = transcriptResult.status
           transcript.value = transcriptResult.text;
           utterances.value = transcriptResult.utterances
