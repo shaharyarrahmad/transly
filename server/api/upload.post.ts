@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
       });
       const responseData = await response.data;
       console.log('responseData', responseData.upload_url);
-      return  {data: responseData.upload_url};
+      return  { data: responseData.upload_url };
     } catch (error) {
       return { status: 500, body: { message: 'Error uploading file' } };
     }
