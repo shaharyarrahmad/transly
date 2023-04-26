@@ -106,8 +106,8 @@ const highlightCurrentWord = (currentTime: number, words: Word[]) => {
   words.forEach((word, index) => {
     const wordElement = document.getElementById(`word-${word.start}`);
     if (index === currentWordIndex) {
-      wordElement.style.backgroundColor = "lightblue";
-      wordElement.style.color = "";
+      wordElement.style.backgroundColor = "#0dcaf0";
+      wordElement.style.color = "white";
     } else {
       wordElement.style.backgroundColor = "";
       wordElement.style.color = "";

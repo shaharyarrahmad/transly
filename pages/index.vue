@@ -51,7 +51,7 @@ const uploadUrl = ref('')
 const errorText = ref('')
 const transcriptResultStatus = ref('')
 const transcriptLoading = ref(false)
-
+const urlUpdated = ref(false)
 const getAudioDuration = () => {
   if (audioElement.value) {
     audioDuration.value = audioElement.value.duration;
@@ -83,6 +83,7 @@ const uploadAudio = async (file: any) => {
 
     if (responseData && responseData.upload_url) {
       uploadUrl.value = responseData.upload_url
+      urlUpdated.value = true
     }
   };
   const estimatedTimeCountDown = () => {
@@ -93,7 +94,6 @@ const uploadAudio = async (file: any) => {
 
   const timer = setInterval(() => {
     timeRemaining -= 1;
-
     if (timeRemaining <= 0) {
       clearInterval(timer);
       estimatedTimeRemaining.value = 'Any Moment Now...';
@@ -109,11 +109,23 @@ const formatTime = (time: number) => {
 };
 
   const transcribeUrl= async (uploadurl: string)=> {
-    // check if uploadUrl is empty
-    if(uploadUrl.value === '') {
-      errorText.value = 'Please Upload Audio'
+
+    const startTime = Date.now()
+    const timeout = 3000 // Timeout after 3000ms
+
+    // Wait for urlUpdated to be true or until timeout is reached
+    while (!urlUpdated.value && (Date.now() - startTime) < timeout) {
+      await new Promise((resolve) => setTimeout(resolve, 1000)) // Wait for 1 second
+    }
+
+    if (!urlUpdated.value) {
+      errorText.value = 'Timeout reached while waiting for URL update'
+      transcriptResultStatus.value = 'Error'
+      transcriptLoading.value = false
       return
     }
+
+
     errorText.value = ''
     transcriptResultStatus.value = 'Processing'
     transcriptLoading.value = true
@@ -170,6 +182,7 @@ const formatTime = (time: number) => {
           uploadProgress.value = -1
           transcriptLoading.value = false
           estimatedTimeRemaining.value = ''
+          urlUpdated.value = false
       }
     };
 </script>
@@ -188,6 +201,3 @@ input[type="file"] {
   fill: white;
 }
 </style>
-
-
-<!-- kill port in terminal single line -->
