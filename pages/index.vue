@@ -63,21 +63,20 @@ const uploadAudio = async (file: any) => {
       uploadUrl.value = responseData.upload_url
     }
   };
-  const transcribeUrl= async (uploadurl: string)=> {
-    errorText.value = ''
-    transcriptResultStatus.value = 'Queued'
-    transcriptLoading.value = true
-      const transcriptionResponse = await fetch(`${API_BASE_URL}/transcript`, {
-        method: 'POST',
-        headers: {
-          'authorization': API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          audio_url: uploadUrl.value,
-          speaker_labels: true,
-        }),
-      });
+  const transcribeUrl = async (uploadurl: string) => {
+  errorText.value = '';
+  transcriptResultStatus.value = 'Queued';
+  transcriptLoading.value = true;
+
+  const transcriptionResponse = await fetch('/api/transcribe', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      audioUrl: uploadUrl.value,
+    }),
+  });
       const transcriptionData = await transcriptionResponse.json();
       if (transcriptionData && transcriptionData.id) {
         let transcriptResult = null;
