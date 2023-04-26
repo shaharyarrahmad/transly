@@ -46,23 +46,20 @@ const errorText = ref('')
 const transcriptResultStatus = ref('')
 const transcriptLoading = ref(false)
 const uploadAudio = async (file: any) => {
-    errorText.value = ''
-    uploadProgress.value = 0
-    const response = await axios.post(`${API_BASE_URL}/upload`, file, {
-      headers: {
-        'authorization': API_KEY,
-        'Transfer-Encoding': 'chunked',
-      },
-      onUploadProgress: (progressEvent: any) => {
-        uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      },
-    });
-    const responseData = await response.data;
+  errorText.value = '';
+  uploadProgress.value = 0;
 
-    if (responseData && responseData.upload_url) {
-      uploadUrl.value = responseData.upload_url
-    }
-  };
+  const { data: resDataSuccess } = await useFetch('/api/upload', {
+    method: 'POST',
+    body: file,
+  });
+  console.log(resDataSuccess.value);
+  const responseData = await resDataSuccess.value;
+
+  if (responseData && responseData.upload_url) {
+    uploadUrl.value = responseData.upload_url;
+  }
+};
   const transcribeUrl = async (uploadurl: string) => {
   errorText.value = '';
   transcriptResultStatus.value = 'Queued';
