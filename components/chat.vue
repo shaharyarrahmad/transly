@@ -14,7 +14,7 @@
           </div>
         </div>
         <div>
-          <div class="d-flex flex-wrap">
+          <div class="d-flex flex-wrap pt-1">
             <template v-for="(word, wordIndex) in utterance.words" :key="wordIndex">
               <span :id="'word-' + word.start">{{ word.text }}</span>
               <span v-if="wordIndex < utterance.words.length - 1">&nbsp;</span>
