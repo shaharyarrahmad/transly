@@ -46,34 +46,38 @@ const errorText = ref('')
 const transcriptResultStatus = ref('')
 const transcriptLoading = ref(false)
 const uploadAudio = async (file: any) => {
-  errorText.value = '';
-  uploadProgress.value = 0;
+    errorText.value = ''
+    uploadProgress.value = 0
+    const response = await axios.post(`${API_BASE_URL}/upload`, file, {
+      headers: {
+        'authorization': API_KEY,
+        'Transfer-Encoding': 'chunked',
+      },
+      onUploadProgress: (progressEvent: any) => {
+        uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      },
+    });
+    const responseData = await response.data;
 
-  const { data: resDataSuccess } = await useFetch('/api/upload', {
-    method: 'POST',
-    body: file,
-  });
-  console.log(resDataSuccess.value);
-  const responseData = await resDataSuccess.value;
-
-  if (responseData && responseData.upload_url) {
-    uploadUrl.value = responseData.upload_url;
-  }
-};
-  const transcribeUrl = async (uploadurl: string) => {
-  errorText.value = '';
-  transcriptResultStatus.value = 'Queued';
-  transcriptLoading.value = true;
-
-  const transcriptionResponse = await fetch('/api/transcribe', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      audioUrl: uploadUrl.value,
-    }),
-  });
+    if (responseData && responseData.upload_url) {
+      uploadUrl.value = responseData.upload_url
+    }
+  };
+  const transcribeUrl= async (uploadurl: string)=> {
+    errorText.value = ''
+    transcriptResultStatus.value = 'Queued'
+    transcriptLoading.value = true
+      const transcriptionResponse = await fetch(`${API_BASE_URL}/transcript`, {
+        method: 'POST',
+        headers: {
+          'authorization': API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          audio_url: uploadUrl.value,
+          speaker_labels: true,
+        }),
+      });
       const transcriptionData = await transcriptionResponse.json();
       if (transcriptionData && transcriptionData.id) {
         let transcriptResult = null;
