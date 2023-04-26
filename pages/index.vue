@@ -60,7 +60,7 @@ const getAudioDuration = () => {
 
 watch(audioDuration, () => {
 //  time is around 33% of the audio duration
-  estimatedTime.value = Math.round(audioDuration.value *0.23) + 8;
+  estimatedTime.value = Math.round(audioDuration.value *0.23) + 5;
 });
 
 
@@ -109,7 +109,11 @@ const formatTime = (time: number) => {
 };
 
   const transcribeUrl= async (uploadurl: string)=> {
-
+    // check if uploadUrl is empty
+    if(uploadUrl.value === '') {
+      errorText.value = 'Please Upload Audio'
+      return
+    }
     errorText.value = ''
     transcriptResultStatus.value = 'Processing'
     transcriptLoading.value = true
@@ -141,9 +145,7 @@ const formatTime = (time: number) => {
         } while (transcriptResult.status === 'queued' || transcriptResult.status === 'processing');
 
         if (transcriptResult.status === 'completed') {
-          uploadProgress.value = -1
-          transcriptLoading.value = false
-          estimatedTimeRemaining.value = ''
+
           if(transcriptResult.text === null) {
             errorText.value = 'No transcript found'
           }
@@ -160,8 +162,14 @@ const formatTime = (time: number) => {
           utterances.value = transcriptResult.utterances
           uploadProgress.value = -1
         } else {
+          errorText.value = transcriptResult.error
+          utterances.value = []
           transcript.value = 'Error retrieving transcript';
         }
+
+          uploadProgress.value = -1
+          transcriptLoading.value = false
+          estimatedTimeRemaining.value = ''
       }
     };
 </script>
