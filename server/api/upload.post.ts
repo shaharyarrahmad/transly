@@ -9,9 +9,8 @@ export default defineEventHandler(async (event) => {
     const audioFile = await readBody(event);
     // const audioFileName = audioFile.name;
     const audioFileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
     const audioFileBuffer = await audioFile.arrayBuffer();
-    await AudioBucket.put(audioFileName, audioFileBuffer);
+    await AudioBucket.put(audioFileName, audioFile);
     return { data: audioFileName };
     // const file = await readBody(event);
     // try {
