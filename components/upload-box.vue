@@ -1,9 +1,10 @@
 <template>
-  <div class="upload-block text-center"
-    @dragover.prevent
-    @dragenter.prevent="handleDragEnter"
-    @dragleave.prevent="handleDragLeave"
-    @drop.prevent="handleDrop"
+  <div class="upload-block text-center "
+    role="button"
+     @drop.prevent="handleDrop"
+     @dragover.prevent="handleDragEnter"
+     @dragenter.prevent="handleDragEnter"
+     @dragleave="handleDragLeave"
     :class="{ 'dragging': isDragging , 'hover':progress!=100}  ">
     <div  @click="selectFile">
       <svg  v-if="progress==-1" xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-cloud-arrow-up upload-icon" viewBox="0 0 16 16" >
@@ -15,7 +16,7 @@
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
         <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
       </svg>
-      <div class="m-1" v-show="errorText == ''">Upload Complete, Press Transcribe</div>
+      <div class="m-1" v-show="errorText == ''">Press Transcribe to get Transcription</div>
       </template>
       <div class="text-danger negativeMargin" style="font-size: small;" v-show="errorText !== ''">Error: {{ errorText }}</div>
       <div v-show="progress!==-1 && progress<100" class="m-1">
@@ -26,7 +27,7 @@
       </div>
     </div>
     <input type="file" @change="onFileChange" accept="audio/*" class="d-none" ref="fileInput"/>
-    <button class="btn btn-primary" :disabled="progress !== 100" @click="onTrasncribePressed" >Transcribe</button>
+    <button class="btn btn-primary" :disabled=" progress > -1 && progress <100" @click="onTrasncribePressed" >{{progress !==100 ? 'Upload' :'Transcribe'}}</button>
   </div>
 </template>
 
@@ -52,13 +53,16 @@ const selectFile = () => {
   fileInput.value.click();
 };
 const onTrasncribePressed = () =>{
-  emit('transcribe-pressed');
+  if (props.progress === 100){
+    emit('transcribe-pressed');
+  } else {
+    selectFile();
+  }
 }
 const onFileChange = (event) => {
   const file = event.target.files[0];
   emit('file-selected', file);
 };
-
 const handleDragEnter = () => {
 isDragging.value = true;
 };

@@ -3,7 +3,7 @@
     <div v-for="(utterance, index) in utterances" :key="index" class="chat-message">
       <div :class="['chat-bubble', `speaker-${utterance.speaker}`, 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
         <div class="d-flex justify-content-between w-100">
-          <strong class="speaker-label me-2">Speaker {{ utterance.speaker }}</strong>
+          <strong class="speaker-label me-2">Speaker {{ labelToNumber(utterance.speaker) }}</strong>
           <small class="time-label text-primary">{{ formatStartTime(utterance.start) }}</small>
         </div>
         <div>{{ utterance.text }}</div>
@@ -21,6 +21,10 @@ const props = defineProps({
     required: true,
   },
 });
+// labelToNumber whole ABC to 123
+const labelToNumber = (label: string) => {
+  return label.charCodeAt(0) - 64;
+};
 const formatStartTime = (start: number) => {
   const seconds = Math.floor(start / 1000);
   const minutes = Math.floor(seconds / 60);

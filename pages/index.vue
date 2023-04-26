@@ -65,7 +65,7 @@ const uploadAudio = async (file: any) => {
   };
   const transcribeUrl= async (uploadurl: string)=> {
     errorText.value = ''
-    transcriptResultStatus.value = 'Queued'
+    transcriptResultStatus.value = 'Transcribing your uploaded file.'
     transcriptLoading.value = true
       const transcriptionResponse = await fetch(`${API_BASE_URL}/transcript`, {
         method: 'POST',
