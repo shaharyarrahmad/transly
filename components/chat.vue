@@ -2,9 +2,9 @@
   <div class="chat-container py-3 px-3">
     <div v-for="(utterance, index) in utterances" :key="index" class="chat-message">
       <div :class="['chat-bubble', `speaker-${utterance.speaker}`, 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between w-100">
           <strong class="speaker-label me-2">Speaker {{ utterance.speaker }}</strong>
-          <small class="time-label">{{ formatStartTime(utterance.start) }}</small>
+          <small class="time-label text-primary">{{ formatStartTime(utterance.start) }}</small>
         </div>
         <div>{{ utterance.text }}</div>
       </div>
