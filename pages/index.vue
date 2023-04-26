@@ -10,11 +10,12 @@
       <div class="container text-center py-3">
         <p class="lead mb-4 fs-1 text-white fw-bolder">Instant, Free and Accurate Transcription</p>
         <UploadBox @fileSelected="uploadAudio" @transcribePressed=" transcribeUrl" :progress="uploadProgress" class="mt-5 mb-3" :errorText="errorText"></UploadBox>
+        <audio ref="audioElement" :src="audioLocalUrl" @loadedmetadata="getAudioDuration"></audio>
       </div>
     </section>
     <div>
       <template  v-if="!transcriptLoading && transcript">
-        <Chat :utterances="utterances" />
+        <Chat :utterances="utterances" :audiosrc="audioLocalUrl"/>
       </template>
       <template v-else-if="transcriptLoading">
         <div class="my-5">
@@ -23,7 +24,8 @@
             <span class="visually-hidden">Loading...</span>
           </div>
       </div>
-      <div class="text-center text-capitalize">{{ transcriptResultStatus }}</div>
+      <div class="text-center text-capitalize">{{ transcriptResultStatus  }}</div>
+      <div v-if="estimatedTimeRemaining!==''" class="text-center text-capitalize">Estimated Time Remaining: {{  estimatedTimeRemaining }}</div>
     </div>
       </template>
     </div>
@@ -37,7 +39,11 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://api.assemblyai.com/v2';
 const API_KEY = '119e15faf70346fea5e487f2b4b7f94b';
-
+const audioLocalUrl = ref('');
+const audioElement = ref<any>(null);
+const audioDuration = ref(0);
+const estimatedTime = ref(0);
+const estimatedTimeRemaining = ref('');
 const transcript = ref('');
 const utterances = ref<Utterance[]>([]);
 const uploadProgress = ref(-1)
@@ -45,9 +51,25 @@ const uploadUrl = ref('')
 const errorText = ref('')
 const transcriptResultStatus = ref('')
 const transcriptLoading = ref(false)
+
+const getAudioDuration = () => {
+  if (audioElement.value) {
+    audioDuration.value = audioElement.value.duration;
+  }
+};
+
+watch(audioDuration, () => {
+//  time is around 33% of the audio duration
+  estimatedTime.value = Math.round(audioDuration.value *0.30);
+});
+
+
+
 const uploadAudio = async (file: any) => {
+
     errorText.value = ''
     uploadProgress.value = 0
+    audioLocalUrl.value = URL.createObjectURL(file);
     const response = await axios.post(`${API_BASE_URL}/upload`, file, {
       headers: {
         'authorization': API_KEY,
@@ -63,9 +85,33 @@ const uploadAudio = async (file: any) => {
       uploadUrl.value = responseData.upload_url
     }
   };
+  const estimatedTimeCountDown = () => {
+  if (estimatedTime.value < 0) return;
+
+  let timeRemaining = estimatedTime.value;
+  estimatedTimeRemaining.value = formatTime(timeRemaining);
+
+  const timer = setInterval(() => {
+    timeRemaining -= 1;
+
+    if (timeRemaining <= 0) {
+      clearInterval(timer);
+      estimatedTimeRemaining.value = '';
+    } else {
+      estimatedTimeRemaining.value = formatTime(timeRemaining);
+    }
+  }, 1000);
+};
+const formatTime = (time: number) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
+
   const transcribeUrl= async (uploadurl: string)=> {
+
     errorText.value = ''
-    transcriptResultStatus.value = 'Transcribing your uploaded file.'
+    transcriptResultStatus.value = 'Processing'
     transcriptLoading.value = true
       const transcriptionResponse = await fetch(`${API_BASE_URL}/transcript`, {
         method: 'POST',
@@ -80,6 +126,7 @@ const uploadAudio = async (file: any) => {
       });
       const transcriptionData = await transcriptionResponse.json();
       if (transcriptionData && transcriptionData.id) {
+        estimatedTimeCountDown()
         let transcriptResult = null;
         do {
           await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -103,9 +150,10 @@ const uploadAudio = async (file: any) => {
             errorText.value = 'Please Upload Audio with more than one speaker.'
             uploadProgress.value = -1
             transcriptLoading.value = false
+            estimatedTimeRemaining.value = ''
             return
           }
-
+          estimatedTimeRemaining.value = ''
           transcriptLoading.value = false
           transcriptResultStatus.value = transcriptResult.status
           transcript.value = transcriptResult.text;
