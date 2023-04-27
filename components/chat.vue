@@ -54,14 +54,6 @@ const pausePlay = () => {
     audio.pause();
   }
 };
-watchEffect(() => {
-  if (currentStart.value !== -1) {
-    const audio = document.getElementById('audio') as HTMLAudioElement;
-    console.log(audio.currentTime);
-    // highlightCurrentWord(audio.currentTime, props.utterances[currentStart.value].words);
-  }
-});
-
 const audioPlayBack = (start: number, end: number, words: Word[]) => {
   currentStart.value = words[0].start;
   const audio = document.getElementById('audio') as HTMLAudioElement;
@@ -106,26 +98,6 @@ const formatSeconds = (seconds: number) => {
   const minutes = Math.floor(seconds/ 60);
   const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-};
-const highlightCurrentWord = (currentTime: number, words: Word[]) => {
-
-  const currentWordIndex = words.findIndex(
-    (word) => currentTime*1000 >= ((word.start)) && currentTime*1000 <= ((word.end ))
-  );
-  words.forEach((word, index) => {
-    console.log(word, currentTime*1000);
-    const wordElement = document.getElementById(`word-${word.start}`);
-    if (index === currentWordIndex) {
-      wordElement.style.backgroundColor = "#0dcaf0";
-      wordElement.style.color = "white";
-      // break forEach
-
-    } else {
-      wordElement.style.backgroundColor = "";
-      wordElement.style.color = "";
-    }
-
-  });
 };
 </script>
 
