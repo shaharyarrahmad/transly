@@ -1,18 +1,18 @@
 export function useSplitLongUtterances() {
   const splitLongUtterances = (utterances: Utterance[]): Utterance[] => {
     const modifiedUtterances: Utterance[] = [];
-
-    utterances.forEach(utterance => {
+    utterances.forEach((utterance) => {
       if (utterance.words.length > 100) {
         const splitUtterances: Utterance[] = [];
         let currentUtterance: Word[] = [];
-        let currentText = '';
+        let currentText = "";
 
         utterance.words.forEach((word, index) => {
           currentUtterance.push(word);
-          currentText += word.text + ' ';
+          currentText += word.text + " ";
           if (
-            (currentUtterance.length > 100 && word.text[word.text.length - 1] == '.') ||
+            (currentUtterance.length > 100 &&
+              word.text[word.text.length - 1] == ".") ||
             index === utterance.words.length - 1
           ) {
             splitUtterances.push({
@@ -23,7 +23,7 @@ export function useSplitLongUtterances() {
               end: currentUtterance[currentUtterance.length - 1].end,
             });
             currentUtterance = [];
-            currentText = '';
+            currentText = "";
           }
         });
 

@@ -1,13 +1,14 @@
 // $body-color: #111;
-.hero-bg{
-background-color: #479dff;
+.hero-bg {
+  background-color: #479dff;
 }
 @font-face {
   font-display: swap;
-  font-family: 'SignikaNegative';
-  src: url('/assets/fonts/SignikaNegative-VariableFont_wght.ttf') format('truetype');
+  font-family: "SignikaNegative";
+  src: url("/assets/fonts/SignikaNegative-VariableFont_wght.ttf")
+    format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
-$font-family-base: 'SignikaNegative';
-@import '../node_modules/bootstrap/scss/bootstrap';
+$font-family-base: "SignikaNegative";
+@import "../node_modules/bootstrap/scss/bootstrap";
