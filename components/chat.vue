@@ -14,11 +14,10 @@
           </div>
         </div>
         <div class="make-relative">
-
           <p class="hidden-search flex-wrap pt-1">{{ utterance.text}}</p>
           <div class="d-flex flex-wrap pt-1">
             <template v-for="(word, wordIndex) in utterance.words" :key="wordIndex">
-              <span :id="'word-' + wordIndex" @click="audioPlayBack(word.start, utterance.end,  utterance.words)" role="button" class="z-10 unselectable" :class="{ 'highlighted-word': playerCurrentTime  >= word.start/1000 && playerCurrentTime  <= word.end/1000 }">{{ word.text }}</span>
+              <span :id="'word-' + word.start" @click="audioPlayBack(word.start, utterance.end,  utterance.words)" role="button" class="z-10 unselectable" :class="{ 'highlighted-word': playerCurrentTime  >= word.start/1000 && playerCurrentTime  <= word.end/1000 }">{{ word.text }}</span>
               <span v-if="wordIndex < utterance.words.length - 1" class="z-10 unselectable">&nbsp;</span>
             </template>
           </div>
@@ -46,6 +45,7 @@ const props = defineProps({
 const labelToNumber = (label: string) => {
   return label.charCodeAt(0) - 64;
 };
+const scrollingManually = ref(false);
 const currentStart = ref(-1);
 const playerCurrentTime = ref(0);
 let currentStopPlayback: () => void;
@@ -58,6 +58,7 @@ const pausePlay = () => {
   }
 };
 const audioPlayBack = (start: number, end: number, words: Word[]) => {
+
   currentStart.value = words[0].start;
   const audio = document.getElementById('audio') as HTMLAudioElement;
   audio.playbackRate = 1;
@@ -71,7 +72,11 @@ const audioPlayBack = (start: number, end: number, words: Word[]) => {
   playerCurrentTime.value = audio.currentTime;
   const stopPlayback = () => {
     playerCurrentTime.value = audio.currentTime ;
-    if (audio.currentTime >= endTime + 0.5) {
+    const highlightedWordEl = document.getElementById(`word-${words.find((word) => audio.currentTime >= word.start / 1000 && audio.currentTime <= word.end / 1000)?.start}`);
+    if (highlightedWordEl && !scrollingManually.value) {
+      highlightedWordEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (audio.currentTime >= endTime ) {
 
       audio.pause();
       currentStart.value = -1;
@@ -101,6 +106,20 @@ const formatSeconds = (seconds: number) => {
   const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
+const scrollingTimeout = ref();
+const handleScroll = () => {
+  scrollingManually.value = true;
+  clearTimeout(scrollingTimeout.value);
+  scrollingTimeout.value = setTimeout(() => {
+    scrollingManually.value = false;
+  }, 3000);
+};
+onMounted(() =>{
+  window.addEventListener('scroll', handleScroll);
+})
+onBeforeMount(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
 <style scoped>
