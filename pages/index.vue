@@ -110,7 +110,7 @@ const uploadAudio = async (file: any) => {
 
   const timer = setInterval(() => {
     timeRemaining -= 1;
-    if (timeRemaining <= 0) {
+    if (timeRemaining <= 0 || transcript.value !== '') {
       clearInterval(timer);
       estimatedTimeRemaining.value = 'Any Moment Now...';
     } else {

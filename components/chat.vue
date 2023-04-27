@@ -1,6 +1,5 @@
 <template>
   <div class="chat-container py-3 px-3">
-    <!-- <audio id="audio" :src="audiosrc" preload="auto" controls @loadeddata="audioLoaded"></audio> -->
     <div v-for="(utterance, index) in utterances" :key="index" class="chat-message">
       <div :class="['chat-bubble', 'speaker', 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
         <div class="d-flex justify-content-between align-items-center w-100">
@@ -17,7 +16,6 @@
           <div class="d-flex flex-wrap pt-1">
             <template v-for="(word, wordIndex) in utterance.words" :key="wordIndex">
               <span :id="'word-' + wordIndex" @click="audioPlayBack(word.start, utterance.end,  utterance.words)" role="button" :class="{ 'highlighted-word': playerCurrentTime  >= word.start/1000 && playerCurrentTime  <= word.end/1000 }">{{ word.text }}</span>
-
               <span v-if="wordIndex < utterance.words.length - 1">&nbsp;</span>
             </template>
           </div>
@@ -77,12 +75,8 @@ const audioPlayBack = (start: number, end: number, words: Word[]) => {
   audio.play();
   audio.muted = false;
   playerCurrentTime.value = audio.currentTime;
-  // audio.playbackRate = 16;
-
   const stopPlayback = () => {
     playerCurrentTime.value = audio.currentTime ;
-    // highlightCurrentWord(audio.currentTime, words);
-
     if (audio.currentTime >= endTime + 0.5) {
 
       audio.pause();
