@@ -89,7 +89,6 @@ const uploadAudio = async (file: any) => {
     const response = await axios.post(`${API_BASE_URL}/upload`, file, {
       headers: {
         'authorization': API_KEY,
-        'Transfer-Encoding': 'chunked',
       },
       onUploadProgress: (progressEvent: any) => {
         uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
