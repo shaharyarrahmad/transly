@@ -12,11 +12,12 @@
             </div>
           </div>
         </div>
-        <div>
+        <div class="make-relative">
+          <p class="hidden-search flex-wrap pt-1">{{ utterance.text}}</p>
           <div class="d-flex flex-wrap pt-1">
             <template v-for="(word, wordIndex) in utterance.words" :key="wordIndex">
-              <span :id="'word-' + wordIndex" @click="audioPlayBack(word.start, utterance.end,  utterance.words)" role="button" :class="{ 'highlighted-word': playerCurrentTime  >= word.start/1000 && playerCurrentTime  <= word.end/1000 }">{{ word.text }}</span>
-              <span v-if="wordIndex < utterance.words.length - 1">&nbsp;</span>
+              <span :id="'word-' + wordIndex" @click="audioPlayBack(word.start, utterance.end,  utterance.words)" role="button" class="z-10 unselectable" :class="{ 'highlighted-word': playerCurrentTime  >= word.start/1000 && playerCurrentTime  <= word.end/1000 }">{{ word.text }}</span>
+              <span v-if="wordIndex < utterance.words.length - 1" class="z-10 unselectable">&nbsp;</span>
             </template>
           </div>
         </div>
@@ -112,11 +113,30 @@ const formatSeconds = (seconds: number) => {
 }
 
 .speaker {
+
   background-color:  #f5f5f5;
   color: grey;
 }
 .highlighted-word {
   background-color: #0dcaf0;
   color: white;
+}
+.hidden-search {
+  position: absolute;
+  color: #f5f5f5;
+  z-index: 3;
+  overflow: hidden;
+
+}
+.z-10 {
+  position: relative;
+  z-index: 10;
+
+}
+/* .unselectable {
+  user-select: none;
+} */
+.make-relative {
+  position: relative;
 }
 </style>
