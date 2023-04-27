@@ -9,7 +9,7 @@
       <hr class="m-0">
       <div class="container text-center py-3">
         <p class="lead mb-4 fs-1 text-white fw-bolder">Instant, Free and Accurate Transcription</p>
-        <UploadBox @fileSelected="uploadAudio" @transcribePressed=" transcribeUrl" :progress="uploadProgress" class="mt-5 mb-3" :errorText="errorText" :transcriptLoading="transcriptLoading" ></UploadBox>
+        <UploadBox @fileSelected="uploadAudio" @transcribePressed=" transcribeUrl" :progress="uploadProgress" class="mt-5 mb-3" :errorText="errorText" :transcriptLoading="transcriptLoading" :estimatedTimeRemaining="estimatedTimeRemaining"></UploadBox>
         <audio ref="audioElement" id="audio" preload="auto" @loadeddata="audioLoaded" :src="audioLocalUrl" @loadedmetadata="getAudioDuration"></audio>
       </div>
     </section>
@@ -71,9 +71,18 @@ const audioLoaded = () => {
   // audio.pause();
   // audio.muted = false;
 };
-
+const audioStopped = () => {
+  const audio = document.getElementById('audio') as HTMLAudioElement;
+  audio.pause();
+};
 const uploadAudio = async (file: any) => {
 
+    if(transcriptLoading.value) {
+      alert('Please wait for the current transcription to finish')
+      return
+    }
+    audioStopped()
+    transcript.value = ''
     errorText.value = ''
     uploadProgress.value = 0
     audioLocalUrl.value = URL.createObjectURL(file);
@@ -116,7 +125,9 @@ const formatTime = (time: number) => {
 };
 
   const transcribeUrl= async (uploadurl: string)=> {
-
+    errorText.value = ''
+    transcriptResultStatus.value = 'Transcribing your uploaded file'
+    transcriptLoading.value = true
     const startTime = Date.now()
     const timeout = 3000 // Timeout after 3000ms
 
@@ -131,11 +142,6 @@ const formatTime = (time: number) => {
       transcriptLoading.value = false
       return
     }
-
-
-    errorText.value = ''
-    transcriptResultStatus.value = 'Transcribing your uploaded file'
-    transcriptLoading.value = true
       const transcriptionResponse = await fetch(`${API_BASE_URL}/transcript`, {
         method: 'POST',
         headers: {
@@ -173,9 +179,12 @@ const formatTime = (time: number) => {
           }
           if(transcriptResult.utterances !== null && transcriptResult.utterances.length < 2) {
             errorText.value = 'Please Upload Audio with more than one speaker.'
+            uploadProgress.value = -1
+            transcriptLoading.value = false
+            estimatedTimeRemaining.value = ''
+            urlUpdated.value = false
             return
           }
-
           transcriptResultStatus.value = transcriptResult.status
           transcript.value = transcriptResult.text;
           utterances.value = transcriptResult.utterances
