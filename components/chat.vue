@@ -133,9 +133,6 @@ const formatSeconds = (seconds: number) => {
   z-index: 10;
 
 }
-/* .unselectable {
-  user-select: none;
-} */
 .make-relative {
   position: relative;
 }
