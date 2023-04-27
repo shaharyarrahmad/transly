@@ -3,6 +3,7 @@
     <p class="text-info text-center">You can easily navigate to any part of the audio by clicking on the corresponding word/timestamp.</p>
     <div v-for="(utterance, index) in splitLongUtterances(utterances)" :key="index" class="chat-message">
       <div :class="['chat-bubble', 'speaker', 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
+        <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex  align-items-center w-100">
           <strong class="speaker-label me-2">Speaker {{ labelToNumber(utterance.speaker) }}</strong>
           <div class="d-flex justify-content-between align-items-center gap-2 ">
@@ -13,6 +14,8 @@
             <button v-show="playerCurrentTime  >= utterance.start/1000 && playerCurrentTime  <= utterance.end/1000" class="btn btn-sm btn-outline-danger py-0" @click="stopAudio">Stop</button>
           </div>
         </div>
+        <button  @click="copyToClipboard(utterance.text)" class="btn btn-sm copy-button">&#128203;</button>
+      </div>
         <div class="make-relative">
           <p class="hidden-search flex-wrap pt-1">{{ utterance.text}}</p>
           <div class="d-flex flex-wrap pt-1">
@@ -26,9 +29,16 @@
     </div>
   </div>
 </template>
-
-
 <script setup lang="ts">
+const showCopyButton = ref(false);
+
+const copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text).then(() => {
+    console.log('Text copied to clipboard');
+  }).catch((err) => {
+    console.error('Error copying text: ', err);
+  });
+};
 import { useSplitLongUtterances } from '~/composables/useSplitLongUtterances';
 const { splitLongUtterances } = useSplitLongUtterances();
 const props = defineProps({
@@ -156,7 +166,10 @@ onBeforeMount(() => {
 .make-relative {
   position: relative;
 }
-.chat-bubble:hover::before {
+.chat-bubble{
+  position: relative;
+}
+/* .chat-bubble:hover::before {
   content: 'Copy';
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
@@ -168,5 +181,14 @@ onBeforeMount(() => {
 }
 .chat-bubble:hover {
   padding-left: 25px;
-}
+} */
+  .chat-bubble .copy-button {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  .chat-bubble:hover .copy-button {
+    opacity: 1;
+  }
+
+
 </style>
