@@ -9,8 +9,8 @@
       <hr class="m-0">
       <div class="container text-center py-3">
         <p class="lead mb-4 fs-1 text-white fw-bolder">Instant, Free and Accurate Transcription</p>
-        <UploadBox @fileSelected="uploadAudio" @transcribePressed=" transcribeUrl" :progress="uploadProgress" class="mt-5 mb-3" :errorText="errorText"></UploadBox>
-        <audio ref="audioElement" :src="audioLocalUrl" @loadedmetadata="getAudioDuration"></audio>
+        <UploadBox @fileSelected="uploadAudio" @transcribePressed=" transcribeUrl" :progress="uploadProgress" class="mt-5 mb-3" :errorText="errorText" :transcriptLoading="transcriptLoading" ></UploadBox>
+        <audio ref="audioElement" id="audio" preload="auto" @loadeddata="audioLoaded" :src="audioLocalUrl" @loadedmetadata="getAudioDuration"></audio>
       </div>
     </section>
     <div>
@@ -63,7 +63,14 @@ watch(audioDuration, () => {
   estimatedTime.value = Math.round(audioDuration.value *0.23) + 5;
 });
 
-
+const audioLoaded = () => {
+  const audio = document.getElementById('audio') as HTMLAudioElement;
+  audio.muted = true;
+  audio.playbackRate = 16;
+  audio.play();
+  // audio.pause();
+  // audio.muted = false;
+};
 
 const uploadAudio = async (file: any) => {
 
@@ -127,7 +134,7 @@ const formatTime = (time: number) => {
 
 
     errorText.value = ''
-    transcriptResultStatus.value = 'Processing'
+    transcriptResultStatus.value = 'Transcribing your uploaded file'
     transcriptLoading.value = true
       const transcriptionResponse = await fetch(`${API_BASE_URL}/transcript`, {
         method: 'POST',

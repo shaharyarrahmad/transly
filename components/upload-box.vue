@@ -27,7 +27,9 @@
       </div>
     </div>
     <input type="file" @change="onFileChange" accept="audio/*" class="d-none" ref="fileInput"/>
-    <button class="btn btn-primary" :disabled=" progress > -1 && progress <100" @click="onTrasncribePressed" >{{progress !==100 ? 'Upload' :'Transcribe'}}</button>
+
+    <button v-if="!transcriptLoading" class="btn btn-primary" :disabled=" progress > -1 && progress <100" @click="onTrasncribePressed" >{{progress !==100 ? 'Upload' : 'Transcribe'}}</button>
+    <button v-if="transcriptLoading" class="btn btn-primary" disabled >Transcribing</button>
   </div>
 </template>
 
@@ -42,8 +44,14 @@ const props = defineProps({
     required: false,
     default: '',
   },
+  transcriptLoading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 import { ref, computed } from 'vue';
+
 const emit = defineEmits(['file-selected', 'transcribe-pressed'])
 
 const fileInput = ref(null);
