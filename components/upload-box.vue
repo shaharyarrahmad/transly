@@ -5,7 +5,7 @@
      @dragover.prevent="handleDragEnter"
      @dragenter.prevent="handleDragEnter"
      @dragleave="handleDragLeave"
-    :class="{ 'dragging': isDragging , 'hover':progress!=100}  ">
+    :class="{ 'dragging': isDragging , 'hover':progress!=100, 'disabled-pointer': (transcriptLoading || uploading) }  ">
     <div  @click="selectFile">
       <svg  v-if="progress==-1" xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-cloud-arrow-up upload-icon" viewBox="0 0 16 16" >
       <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2z"/>
@@ -62,8 +62,10 @@ const emit = defineEmits(['file-selected', 'transcribe-pressed'])
 
 const fileInput = ref(null);
 const isDragging = ref(false);
+const uploading = computed(() => props.progress > -1 && props.progress < 100);
 const svgWh = ref(80)
 const selectFile = () => {
+  if(props.transcriptLoading || uploading.value) return;
   fileInput.value.click();
 };
 const onTrasncribePressed = () =>{
@@ -74,6 +76,8 @@ const onTrasncribePressed = () =>{
   }
 }
 const onFileChange = (event) => {
+  if(props.transcriptLoading || uploading.value) return;
+  if(!event.target.files.length) return;
   const file = event.target.files[0];
   emit('file-selected', file);
 };
@@ -81,18 +85,15 @@ const handleDragEnter = () => {
 isDragging.value = true;
 };
 const handleDragLeave = () => {
-
 isDragging.value = false;
 };
 
 const handleDrop = (event) => {
+if(props.transcriptLoading || uploading.value) return;
 const file = event.dataTransfer.files[0];
 emit('file-selected', file);
 isDragging.value = false;
 };
-const uploadClasses = (progress) =>{
-// if progress > 0
-}
 </script>
 <style scoped>
 .upload-block {
@@ -133,5 +134,9 @@ h2 {
 .negativeMargin{
   margin-top: -1rem;
   margin-bottom: .3rem;
+}
+.disabled-pointer{
+  cursor:  no-drop;
+
 }
 </style>

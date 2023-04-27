@@ -1,18 +1,20 @@
 <template>
   <div class="chat-container py-3 px-3">
+    <p class="text-info text-center">You can easily navigate to any part of the audio by clicking on the corresponding word/timestamp.</p>
     <div v-for="(utterance, index) in utterances" :key="index" class="chat-message">
       <div :class="['chat-bubble', 'speaker', 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
         <div class="d-flex justify-content-between align-items-center w-100">
           <strong class="speaker-label me-2">Speaker {{ labelToNumber(utterance.speaker) }}</strong>
           <div class="d-flex justify-content-between align-items-center gap-2 ">
             <button v-show="utterance.start == currentStart" class="btn btn-sm btn-outline-danger py-0" @click="stopAudio">Stop</button>
-            <div v-show="utterance.start == currentStart" class="time-label text-primary " role="button" @click="pausePlay" data-toggle="tooltip" data-placement="top" title="Click to Pause">{{ formatSeconds(playerCurrentTime) }}
+            <div v-if="utterance.start == currentStart" class="time-label text-primary " role="button" @click="pausePlay" data-toggle="tooltip" data-placement="top" title="Click to Pause">{{ formatSeconds(playerCurrentTime) }}
             </div>
-            <div class="time-label text-primary" role="button" @click="audioPlayBack(utterance.words[0].start, utterance.end,  utterance.words)" data-toggle="tooltip" data-placement="top" title="Click to Play">{{ formatStartTime(utterance.start) }}
+            <div v-else class="time-label text-primary" role="button" @click="audioPlayBack(utterance.words[0].start, utterance.end,  utterance.words)" data-toggle="tooltip" data-placement="top" title="Click to Play">{{ formatStartTime(utterance.start) }}
             </div>
           </div>
         </div>
         <div class="make-relative">
+
           <p class="hidden-search flex-wrap pt-1">{{ utterance.text}}</p>
           <div class="d-flex flex-wrap pt-1">
             <template v-for="(word, wordIndex) in utterance.words" :key="wordIndex">
