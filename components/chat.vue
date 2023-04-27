@@ -3,14 +3,15 @@
     <p class="text-info text-center">You can easily navigate to any part of the audio by clicking on the corresponding word/timestamp.</p>
     <div v-for="(utterance, index) in utterances" :key="index" class="chat-message">
       <div :class="['chat-bubble', 'speaker', 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
-        <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex  align-items-center w-100">
           <strong class="speaker-label me-2">Speaker {{ labelToNumber(utterance.speaker) }}</strong>
           <div class="d-flex justify-content-between align-items-center gap-2 ">
-            <button v-show="utterance.start == currentStart" class="btn btn-sm btn-outline-danger py-0" @click="stopAudio">Stop</button>
+
             <div v-if="utterance.start == currentStart" class="time-label text-primary " role="button" @click="pausePlay" data-toggle="tooltip" data-placement="top" title="Click to Pause">{{ formatSeconds(playerCurrentTime) }}
             </div>
             <div v-else class="time-label text-primary" role="button" @click="audioPlayBack(utterance.words[0].start, utterance.end,  utterance.words)" data-toggle="tooltip" data-placement="top" title="Click to Play">{{ formatStartTime(utterance.start) }}
             </div>
+            <button v-show="playerCurrentTime  >= utterance.start/1000 && playerCurrentTime  <= utterance.end/1000" class="btn btn-sm btn-outline-danger py-0" @click="stopAudio">Stop</button>
           </div>
         </div>
         <div class="make-relative">
@@ -77,7 +78,6 @@ const audioPlayBack = (start: number, end: number, words: Word[]) => {
       highlightedWordEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     if (audio.currentTime >= endTime ) {
-
       audio.pause();
       currentStart.value = -1;
       playerCurrentTime.value = -1;
@@ -99,7 +99,7 @@ const formatStartTime = (start: number) => {
   const seconds = Math.floor(start / 1000);
   const minutes = Math.floor(seconds / 60);
 
-  return `${minutes}:${(seconds % 60).toString().padStart(2, '0')}`;
+  return `${minutes.toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
 };
 const formatSeconds = (seconds: number) => {
   const minutes = Math.floor(seconds/ 60);
@@ -156,5 +156,18 @@ onBeforeMount(() => {
 }
 .make-relative {
   position: relative;
+}
+.chat-bubble:hover::before {
+  content: 'Copy';
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+.chat-bubble:hover {
+  padding-left: 25px;
 }
 </style>

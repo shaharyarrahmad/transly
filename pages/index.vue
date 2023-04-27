@@ -168,8 +168,13 @@ const formatTime = (time: number) => {
 
         if (transcriptResult.status === 'completed') {
 
-          if(transcriptResult.text === null) {
-            errorText.value = 'No transcript found'
+          if(transcriptResult.text === null || transcriptResult.text === '') {
+            errorText.value = 'No Words Detected, Upload a different file.'
+            uploadProgress.value = -1
+            transcriptLoading.value = false
+            estimatedTimeRemaining.value = ''
+            urlUpdated.value = false
+            return
           }
           if(transcriptResult.error !== null) {
             errorText.value = transcriptResult.error
