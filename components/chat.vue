@@ -57,7 +57,6 @@ const pausePlay = () => {
 const audioPlayBack = (start: number, end: number, words: Word[]) => {
   currentStart.value = words[0].start;
   const audio = document.getElementById('audio') as HTMLAudioElement;
-  // set (start / 1000) closest to seconds, no .xxx
   audio.playbackRate = 1;
   audio.currentTime = start / 1000
   const endTime = (end / 1000);

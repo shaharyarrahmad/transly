@@ -59,7 +59,6 @@ const getAudioDuration = () => {
 };
 
 watch(audioDuration, () => {
-//  time is around 33% of the audio duration
   estimatedTime.value = Math.round(audioDuration.value *0.23) + 5;
 });
 
@@ -128,11 +127,10 @@ const formatTime = (time: number) => {
     transcriptResultStatus.value = 'Transcribing your uploaded file'
     transcriptLoading.value = true
     const startTime = Date.now()
-    const timeout = 3000 // Timeout after 3000ms
+    const timeout = 3000
 
-    // Wait for urlUpdated to be true or until timeout is reached
     while (!urlUpdated.value && (Date.now() - startTime) < timeout) {
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // Wait for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
 
     if (!urlUpdated.value) {

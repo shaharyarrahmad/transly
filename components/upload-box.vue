@@ -80,7 +80,6 @@ const onFileChange = (event) => {
 const handleDragEnter = () => {
 isDragging.value = true;
 };
-
 const handleDragLeave = () => {
 
 isDragging.value = false;
@@ -94,8 +93,6 @@ isDragging.value = false;
 const uploadClasses = (progress) =>{
 // if progress > 0
 }
-
-
 </script>
 <style scoped>
 .upload-block {
