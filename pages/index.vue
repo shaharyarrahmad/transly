@@ -14,6 +14,7 @@
       </div>
     </section>
     <div>
+      <!-- <Chat :utterances="tedTalk.utterances" :audiosrc="audioLocalUrl"/> -->
       <template  v-if="!transcriptLoading && transcript">
         <Chat :utterances="utterances" :audiosrc="audioLocalUrl"/>
       </template>
@@ -36,7 +37,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from 'axios';
-
+// import tedTalk  from '~/assets/sample/tedTalk.json';
 const API_BASE_URL = 'https://api.assemblyai.com/v2';
 const API_KEY = '119e15faf70346fea5e487f2b4b7f94b';
 const audioLocalUrl = ref('');
@@ -67,8 +68,7 @@ const audioLoaded = () => {
   audio.muted = true;
   audio.playbackRate = 16;
   audio.play();
-  // audio.pause();
-  // audio.muted = false;
+
 };
 const audioStopped = () => {
   const audio = document.getElementById('audio') as HTMLAudioElement;
@@ -189,7 +189,7 @@ const formatTime = (time: number) => {
           }
           transcriptResultStatus.value = transcriptResult.status
           transcript.value = transcriptResult.text;
-          utterances.value = transcriptResult.utterances
+          utterances.value = transcriptResult.utterances;
           uploadProgress.value = -1
         } else {
           errorText.value = transcriptResult.error
@@ -203,6 +203,7 @@ const formatTime = (time: number) => {
           urlUpdated.value = false
       }
     };
+
 </script>
 <style scoped>
 

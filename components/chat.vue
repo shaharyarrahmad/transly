@@ -1,12 +1,11 @@
 <template>
   <div class="chat-container py-3 px-3">
     <p class="text-info text-center">You can easily navigate to any part of the audio by clicking on the corresponding word/timestamp.</p>
-    <div v-for="(utterance, index) in utterances" :key="index" class="chat-message">
+    <div v-for="(utterance, index) in splitLongUtterances(utterances)" :key="index" class="chat-message">
       <div :class="['chat-bubble', 'speaker', 'p-3', 'rounded-3', 'mb-3', 'd-inline-block']">
         <div class="d-flex  align-items-center w-100">
           <strong class="speaker-label me-2">Speaker {{ labelToNumber(utterance.speaker) }}</strong>
           <div class="d-flex justify-content-between align-items-center gap-2 ">
-
             <div v-if="utterance.start == currentStart" class="time-label text-primary " role="button" @click="pausePlay" data-toggle="tooltip" data-placement="top" title="Click to Pause">{{ formatSeconds(playerCurrentTime) }}
             </div>
             <div v-else class="time-label text-primary" role="button" @click="audioPlayBack(utterance.words[0].start, utterance.end,  utterance.words)" data-toggle="tooltip" data-placement="top" title="Click to Play">{{ formatStartTime(utterance.start) }}
@@ -30,7 +29,8 @@
 
 
 <script setup lang="ts">
-
+import { useSplitLongUtterances } from '~/composables/useSplitLongUtterances';
+const { splitLongUtterances } = useSplitLongUtterances();
 const props = defineProps({
   utterances: {
     type: Object as PropType<Array<Utterance>>,
@@ -128,7 +128,6 @@ onBeforeMount(() => {
   width: 100%;
   border-radius: 5px;
 }
-
 .chat-message {
   margin-bottom: 1rem;
 }
