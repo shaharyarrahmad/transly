@@ -160,7 +160,6 @@ const resetTranscriptState = () => {
 };
 
 const handleCompletedTranscript = (transcriptResult: any) => {
-  console.log(transcriptResult);
   if (transcriptResult.text === null || transcriptResult.text === "") {
     handleTranscriptError("No Words Detected, Upload a different file.");
     return;
