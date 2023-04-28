@@ -2,7 +2,7 @@
   <div>
     <section class="hero-section hero-bg">
       <div class="d-flex align-items-center p-3">
-        <img src="/icon.svg" class="logo" width="30px" />
+        <img src="/icon.svg" class="logo" width="30" height="25" alt="logo" />
         <h1 class="text-white mb-0 ms-2 fw-light">Transly</h1>
       </div>
 
