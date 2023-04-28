@@ -160,12 +160,13 @@ const resetTranscriptState = () => {
 };
 
 const handleCompletedTranscript = (transcriptResult: any) => {
+  console.log(transcriptResult);
   if (transcriptResult.text === null || transcriptResult.text === "") {
     handleTranscriptError("No Words Detected, Upload a different file.");
     return;
   }
 
-  if (transcriptResult.error !== null) {
+  if (transcriptResult.error) {
     handleTranscriptError(transcriptResult.error);
     return;
   }
@@ -177,7 +178,7 @@ const handleCompletedTranscript = (transcriptResult: any) => {
     handleTranscriptError("Please Upload Audio with more than one speaker.");
     return;
   }
-
+  console.log("Transcript Completed");
   transcriptResultStatus.value = transcriptResult.status;
   transcript.value = transcriptResult.text;
   utterances.value = transcriptResult.utterances;
@@ -189,9 +190,8 @@ const transcribeUrl = async (uploadurl: string) => {
   const startTime = Date.now();
   const timeout = 3000;
   while (!urlUpdated.value && Date.now() - startTime < timeout) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 300));
   }
-
   if (!urlUpdated.value) {
     errorText.value = "Timeout reached while waiting for URL update";
     transcriptResultStatus.value = "Error";
@@ -233,6 +233,7 @@ const transcribeUrl = async (uploadurl: string) => {
     );
 
     if (transcriptResult.status === "completed") {
+      console.log("hello");
       handleCompletedTranscript(transcriptResult);
     } else {
       errorText.value = transcriptResult.error;
