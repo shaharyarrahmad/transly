@@ -258,19 +258,6 @@ onBeforeMount(() => {
 .chat-bubble {
   position: relative;
 }
-/* .chat-bubble:hover::before {
-  content: 'Copy';
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
-  position: absolute;
-  left: -30px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-}
-.chat-bubble:hover {
-  padding-left: 25px;
-} */
 .chat-bubble .copy-button {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
