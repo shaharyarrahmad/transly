@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   generate: {
     routes: ["/"],
   },
+  runtimeConfig: {
+    public: {
+      ASSEMBLYAI_API_KEY: process.env.ASSEMBLYAI_API_KEY,
+    },
+  },
   css: ["@/assets/styles/main.scss"],
   app: {
     head: {

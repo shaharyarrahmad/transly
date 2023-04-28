@@ -65,7 +65,7 @@ import { ref } from "vue";
 import axios from "axios";
 // import tedTalk  from '~/assets/sample/tedTalk.json';
 const API_BASE_URL = "https://api.assemblyai.com/v2";
-const API_KEY = "119e15faf70346fea5e487f2b4b7f94b";
+const API_KEY = useRuntimeConfig().public.ASSEMBLYAI_API_KEY;
 const audioLocalUrl = ref("");
 const audioElement = ref<any>(null);
 const audioDuration = ref(0);
