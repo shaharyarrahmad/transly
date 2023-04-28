@@ -177,7 +177,6 @@ const handleCompletedTranscript = (transcriptResult: any) => {
     handleTranscriptError("Please Upload Audio with more than one speaker.");
     return;
   }
-  console.log("Transcript Completed");
   transcriptResultStatus.value = transcriptResult.status;
   transcript.value = transcriptResult.text;
   utterances.value = transcriptResult.utterances;
@@ -232,7 +231,6 @@ const transcribeUrl = async (uploadurl: string) => {
     );
 
     if (transcriptResult.status === "completed") {
-      console.log("hello");
       handleCompletedTranscript(transcriptResult);
     } else {
       errorText.value = transcriptResult.error;
