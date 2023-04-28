@@ -71,7 +71,7 @@
     <input
       type="file"
       @change="onFileChange"
-      accept="audio/*"
+      accept="audio/mp3, audio/wav, audio/mpeg, audio/*, audio/m4a, audio/x-m4a, audio/x-wav, audio/x-mpeg, audio/x-mp3"
       class="d-none"
       ref="fileInput"
     />
@@ -134,6 +134,7 @@ const onTrasncribePressed = () => {
 const onFileChange = (event: any) => {
   if (props.transcriptLoading || uploading.value) return;
   if (!event.target.files.length) return;
+
   const file = event.target.files[0];
   emit("file-selected", file);
 };
