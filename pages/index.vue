@@ -147,14 +147,47 @@ const formatTime = (time: number) => {
   const seconds = time % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 };
+const handleTranscriptError = (message: any) => {
+  errorText.value = message;
+  resetTranscriptState();
+};
 
+const resetTranscriptState = () => {
+  uploadProgress.value = -1;
+  transcriptLoading.value = false;
+  estimatedTimeRemaining.value = "";
+  urlUpdated.value = false;
+};
+
+const handleCompletedTranscript = (transcriptResult: any) => {
+  if (transcriptResult.text === null || transcriptResult.text === "") {
+    handleTranscriptError("No Words Detected, Upload a different file.");
+    return;
+  }
+
+  if (transcriptResult.error !== null) {
+    handleTranscriptError(transcriptResult.error);
+    return;
+  }
+
+  if (
+    transcriptResult.utterances !== null &&
+    transcriptResult.utterances.length < 2
+  ) {
+    handleTranscriptError("Please Upload Audio with more than one speaker.");
+    return;
+  }
+
+  transcriptResultStatus.value = transcriptResult.status;
+  transcript.value = transcriptResult.text;
+  utterances.value = transcriptResult.utterances;
+  resetTranscriptState();
+};
 const transcribeUrl = async (uploadurl: string) => {
   errorText.value = "";
-  transcriptResultStatus.value = "Transcribing your uploaded file";
   transcriptLoading.value = true;
   const startTime = Date.now();
   const timeout = 3000;
-
   while (!urlUpdated.value && Date.now() - startTime < timeout) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
@@ -165,6 +198,7 @@ const transcribeUrl = async (uploadurl: string) => {
     transcriptLoading.value = false;
     return;
   }
+  transcriptResultStatus.value = "Transcribing your uploaded file";
   const transcriptionResponse = await fetch(`${API_BASE_URL}/transcript`, {
     method: "POST",
     headers: {
@@ -199,42 +233,13 @@ const transcribeUrl = async (uploadurl: string) => {
     );
 
     if (transcriptResult.status === "completed") {
-      if (transcriptResult.text === null || transcriptResult.text === "") {
-        errorText.value = "No Words Detected, Upload a different file.";
-        uploadProgress.value = -1;
-        transcriptLoading.value = false;
-        estimatedTimeRemaining.value = "";
-        urlUpdated.value = false;
-        return;
-      }
-      if (transcriptResult.error !== null) {
-        errorText.value = transcriptResult.error;
-      }
-      if (
-        transcriptResult.utterances !== null &&
-        transcriptResult.utterances.length < 2
-      ) {
-        errorText.value = "Please Upload Audio with more than one speaker.";
-        uploadProgress.value = -1;
-        transcriptLoading.value = false;
-        estimatedTimeRemaining.value = "";
-        urlUpdated.value = false;
-        return;
-      }
-      transcriptResultStatus.value = transcriptResult.status;
-      transcript.value = transcriptResult.text;
-      utterances.value = transcriptResult.utterances;
-      uploadProgress.value = -1;
+      handleCompletedTranscript(transcriptResult);
     } else {
       errorText.value = transcriptResult.error;
       utterances.value = [];
       transcript.value = "Error retrieving transcript";
+      resetTranscriptState();
     }
-
-    uploadProgress.value = -1;
-    transcriptLoading.value = false;
-    estimatedTimeRemaining.value = "";
-    urlUpdated.value = false;
   }
 };
 </script>
