@@ -1,6 +1,6 @@
 <template>
   <div class="chat-container py-3 px-3">
-    <p class="text-info text-center">
+    <p class="text-blue-500 text-center">
       You can easily navigate to any part of the audio by clicking on the
       corresponding word/timestamp.
     </p>
@@ -14,22 +14,20 @@
           'chat-bubble',
           'speaker',
           'p-3',
-          'rounded-3',
+          'rounded-md',
           'mb-3',
-          'd-inline-block',
+          'inline-block',
         ]"
       >
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center w-100">
-            <strong class="speaker-label me-2"
+        <div class="flex justify-between items-center">
+          <div class="flex items-center w-full">
+            <strong class="speaker-label mr-2"
               >Speaker {{ labelToNumber(utterance.speaker) }}</strong
             >
-            <div
-              class="d-flex justify-content-between align-items-center gap-2"
-            >
+            <div class="flex justify-between items-center gap-2">
               <div
                 v-if="utterance.start == currentStart"
-                class="time-label text-primary"
+                class="time-label text-blue-500"
                 role="button"
                 @click="pausePlay"
                 data-toggle="tooltip"
@@ -40,7 +38,7 @@
               </div>
               <div
                 v-else
-                class="time-label text-primary"
+                class="time-label text-blue-500"
                 role="button"
                 @click="
                   audioPlayBack(
@@ -74,9 +72,9 @@
             &#128203;
           </button>
         </div>
-        <div class="make-relative">
+        <div class="relative">
           <p class="hidden-search flex-wrap pt-1">{{ utterance.text }}</p>
-          <div class="d-flex flex-wrap pt-1">
+          <div class="flex flex-wrap pt-1">
             <template
               v-for="(word, wordIndex) in utterance.words"
               :key="wordIndex"
@@ -87,7 +85,7 @@
                   audioPlayBack(word.start, utterance.end, utterance.words)
                 "
                 role="button"
-                class="z-10 unselectable"
+                class="z-10 select-none"
                 :class="{
                   'highlighted-word':
                     playerCurrentTime >= word.start / 1000 &&
@@ -97,7 +95,7 @@
               >
               <span
                 v-if="wordIndex < utterance.words.length - 1"
-                class="z-10 unselectable"
+                class="z-10 select-none"
                 >&nbsp;</span
               >
             </template>
@@ -107,6 +105,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 const showCopyButton = ref(false);
 

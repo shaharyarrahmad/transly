@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: ["@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
   generate: {
     routes: ["/"],
   },
@@ -8,6 +9,7 @@ export default defineNuxtConfig({
       ASSEMBLYAI_API_KEY: process.env.ASSEMBLYAI_API_KEY,
     },
   },
+
   css: ["@/assets/styles/main.scss"],
   app: {
     head: {

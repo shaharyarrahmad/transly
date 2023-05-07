@@ -1,15 +1,15 @@
 <template>
   <div
-    class="upload-block text-center"
+    class="p-8 bg-gray-200 rounded-xl max-w-md mx-auto border-2 border-transparent text-center upload-block"
     role="button"
     @drop.prevent="handleDrop"
     @dragover.prevent="handleDragEnter"
     @dragenter.prevent="handleDragEnter"
     @dragleave="handleDragLeave"
     :class="{
-      dragging: isDragging,
+      'border-primary': isDragging,
       hover: progress != 100,
-      'disabled-pointer': transcriptLoading || uploading,
+      'pointer-events-none': transcriptLoading || uploading,
     }"
   >
     <div @click="selectFile">
@@ -18,8 +18,8 @@
         xmlns="http://www.w3.org/2000/svg"
         width="80"
         height="80"
-        fill="currentColor"
-        class="bi bi-cloud-arrow-up upload-icon"
+        fill="blue"
+        class="upload-icon"
         viewBox="0 0 16 16"
       >
         <path
@@ -35,7 +35,7 @@
           xmlns="http://www.w3.org/2000/svg"
           width="65"
           height="65"
-          fill="currentColor"
+          fill="blue"
           class="bi bi-check-circle upload-icon2"
           viewBox="0 0 16 16"
         >
@@ -51,18 +51,11 @@
         </div>
         <div class="m-1" v-show="transcriptLoading">&nbsp;</div>
       </template>
-      <div
-        class="text-danger negativeMargin"
-        style="font-size: small"
-        v-show="errorText !== ''"
-      >
+      <div class="text-danger -mt-4 mb-1 text-sm" v-show="errorText !== ''">
         Error: {{ errorText }}
       </div>
       <div v-show="progress !== -1 && progress < 100" class="m-1">
-        <div
-          class="spinner-border text-primary spinner-dimensions"
-          role="status"
-        >
+        <div class="spinner-border text-primary w-16 h-16" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
         <div>Uploading: {{ progress }}%</div>
@@ -72,7 +65,7 @@
       type="file"
       @change="onFileChange"
       accept="audio/mp3, audio/wav, audio/mpeg, audio/*, audio/m4a, audio/x-m4a, audio/x-wav, audio/x-mpeg, audio/x-mp3"
-      class="d-none"
+      class="hidden"
       ref="fileInput"
     />
 
@@ -154,12 +147,13 @@ const handleDrop = (event: any) => {
 </script>
 <style scoped>
 .upload-block {
-  padding: 2rem;
-  background-color: var(--bs-light);
+  background-color: white;
   border-radius: 1rem;
   max-width: 400px;
-  margin: 0 auto;
   border: 2px solid transparent;
+}
+.upload-block > * {
+  text-align: center;
 }
 
 .dragging {
@@ -194,4 +188,26 @@ h2 {
 .disabled-pointer {
   cursor: no-drop;
 }
+/*
+.dragging {
+  @apply border-primary;
+}
+.upload-icon {
+  @apply text-4xl text-primary mb-4;
+}
+.upload-icon2 {
+  @apply text-primary;
+}
+div.hover svg {
+  @apply transition-transform duration-200 ease-in-out;
+}
+div.hover:hover svg {
+  @apply transform scale-150;
+}
+.spinner-dimensions {
+  @apply w-16 h-16;
+}
+.pointer-events-none {
+  @apply cursor-not-allowed;
+} */
 </style>
